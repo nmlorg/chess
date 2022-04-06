@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<body>
+
+<script type="module">
+let testfiles = [
+    'test_test.js',
+];
+
+
+class AssertionError extends Error {}
+
+
+let utils = {
+
+assert(assertion, msg) {
+  if (assertion)
+    return;
+  let message = 'Assertion failed';
+  if (msg)
+    message = `${message}: ${msg}`;
+  throw new AssertionError(message);
+}
+
+};
+
+
+let pre = document.body.appendChild(document.createElement('pre'));
+
+for (let testfilename of testfiles) {
+  let testfile = await import(`./${testfilename}`);
+  for (let [funcname, func] of Object.entries(testfile)) {
+    if (func instanceof Function) {
+      pre.append(`${testfilename}:${funcname}`);
+      try {
+        func(utils);
+        pre.append(' PASS\n');
+      } catch (exc) {
+        pre.append(' FAIL\n');
+        pre.append(`${exc.stack}\n`);
+      }
+    }
+  }
+}
+</script>

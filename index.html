@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<body>
+<style>
+:root {
+  --size: 11vh;
+}
+
+@media (orientation: portrait) {
+  :root {
+    --size: 11vw;
+  }
+}
+
+chess-square {
+  border: 2px solid red;
+  display: block;
+  height: var(--size);
+  width: var(--size);
+}
+
+chess-square.source {
+  background-color: red;
+}
+
+chess-square.target {
+  background-color: blue;
+}
+</style>
+<script type="module">
+import {Board} from './game/board.js';
+import {ChessBoardElement} from './html/chess-board.js';
+
+
+let board = new Board();
+board.reset();
+
+document.body.appendChild(new ChessBoardElement(board));
+</script>

@@ -47,6 +47,41 @@ export class Board {
       }
     }
   }
+
+  serialize() {
+    let namerows = [];
+    let namelen = 0;
+    for (let row of this.rows) {
+      let namerow = [];
+      namerows.push(namerow);
+      for (let square of row) {
+        if (!square.piece) {
+          namerow.push('.');
+          continue;
+        }
+        let piece = square.piece;
+        let name;
+        if (piece instanceof Knight)
+          name = 'N';
+        else
+          name = piece.constructor.name[0];
+        if (!piece.player)
+          name = name.toLowerCase();
+        if (piece.moves)
+          name += piece.moves;
+        namerow.push(name);
+        if (name.length > namelen)
+          namelen = name.length;
+      }
+    }
+    for (let i = 0; i < namerows.length; i++) {
+      let namerow = namerows[i];
+      for (let j = 0; j < namerow.length - 1; j++)
+        namerow[j] = namerow[j].padEnd(namelen, ' ');
+      namerows[i] = namerow.join(' ');
+    }
+    return namerows.join('\n');
+  }
 }
 
 

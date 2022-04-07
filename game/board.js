@@ -18,34 +18,49 @@ export class Board {
     return board;
   }
 
-  reset() {
-    this.rows = [
-        ['ro', 'kn', 'bi', 'qu', 'ki', 'bi', 'kn', 'ro'],
-        ['pa', 'pa', 'pa', 'pa', 'pa', 'pa', 'pa', 'pa'],
-        ['  ', '  ', '  ', '  ', '  ', '  ', '  ', '  '],
-        ['  ', '  ', '  ', '  ', '  ', '  ', '  ', '  '],
-        ['  ', '  ', '  ', '  ', '  ', '  ', '  ', '  '],
-        ['  ', '  ', '  ', '  ', '  ', '  ', '  ', '  '],
-        ['pa', 'pa', 'pa', 'pa', 'pa', 'pa', 'pa', 'pa'],
-        ['ro', 'kn', 'bi', 'qu', 'ki', 'bi', 'kn', 'ro'],
-    ];
+  load(str) {
     let pieceNames = {
-        ro: Rook,
-        kn: Knight,
-        bi: Bishop,
-        qu: Queen,
-        ki: King,
-        pa: Pawn,
+        r: Rook,
+        n: Knight,
+        b: Bishop,
+        q: Queen,
+        k: King,
+        p: Pawn,
     };
-    for (let y = 0; y < this.rows.length; y++) {
-      let row = this.rows[y];
-      for (let x = 0; x < row.length; x++) {
-        let name = row[x];
-        let square = row[x] = new Square(this, x, y);
-        if (name in pieceNames)
-          square.piece = new pieceNames[name](square, y > 3);
+
+    this.rows = [];
+    let lines = str.trim().replace(/\r\n/g, '\n').split('\n');
+    if (!lines[0])  // ''.split('\n') == ['']
+      return;
+    for (let y = 0; y < lines.length; y++) {
+      let row = [];
+      this.rows.push(row);
+      let line = lines[y].split(/\s+/);
+      for (let x = 0; x < line.length; x++) {
+        let square = new Square(this, x, y);
+        row.push(square);
+        let desc = line[x];
+        if (desc == '.')
+          continue;
+        let namelower = desc[0].toLowerCase();
+        let piece = new pieceNames[namelower](square, namelower != desc[0]);
+        square.piece = piece;
+        if (desc.length > 1)
+          piece.moves = Number(desc.substr(1));
       }
     }
+  }
+
+  reset() {
+    this.load(`\
+r n b q k b n r
+p p p p p p p p
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+P P P P P P P P
+R N B Q K B N R`);
   }
 
   serialize() {

@@ -1,7 +1,7 @@
-import {Board} from './board.js';
+import {Board, numToLetters_} from './board.js';
 
 
-export function testLoad(U) {
+export function testBoardLoad(U) {
   let board = new Board();
   U.assert(board.serialize() == '');
 
@@ -24,7 +24,7 @@ export function testLoad(U) {
 }
 
 
-export function testReset(U) {
+export function testBoardReset(U) {
   let board = new Board();
   U.assert(board.rows instanceof Array);
   U.assert(board.rows.length == 0);
@@ -33,7 +33,7 @@ export function testReset(U) {
 }
 
 
-export function testSerialize(U) {
+export function testBoardSerialize(U) {
   let board = new Board();
   U.assert(board.serialize() == '');
 
@@ -69,4 +69,24 @@ p   p   p   p   p   p   p   p
 .   .   .   .   .   .   .   .
 P   P1  P   P   P   P   P   P
 R   N   B   Q   K   B   N   R`);
+}
+
+
+export function testNumToLetters(U) {
+  U.assert(numToLetters_(0) == 'a');
+  U.assert(numToLetters_(1) == 'b');
+  U.assert(numToLetters_(25) == 'z');
+  U.assert(numToLetters_(26) == 'aa');
+  U.assert(numToLetters_(27) == 'ab');
+  U.assert(numToLetters_(60) == 'bi');
+  U.assert(numToLetters_(999) == 'all');
+}
+
+
+export function testSquareName(U) {
+  let board = new Board();
+  board.reset();
+  U.assert(board.rows[0][0].name, 'a8');
+  U.assert(board.rows[7][0].name, 'a1');
+  U.assert(board.rows[7][7].name, 'h1');
 }

@@ -100,11 +100,24 @@ R N B Q K B N R`);
 }
 
 
+export function numToLetters_(num) {
+  // See https://github.com/nmlorg/chess/issues/1.
+  let letters = String.fromCharCode(97 + num % 26);
+  num = Math.floor(num / 26);
+  while (num) {
+    letters = `${String.fromCharCode(97 + num % 26 - 1)}${letters}`;
+    num = Math.floor(num / 26);
+  }
+  return letters;
+}
+
+
 class Square {
   constructor(board, x, y) {
     this.board = board;
     this.x = x;
     this.y = y;
+    this.name = `${numToLetters_(x)}${board.rows.length - y}`;
     this.piece = null;
   }
 

@@ -1,6 +1,33 @@
 import {Board, numToLetters_} from './board.js';
 
 
+export function testBoardCopy(U) {
+  let board1 = new Board();
+  let board2 = board1.copy();
+  U.assert(board1.serialize() == '');
+  U.assert(board2.serialize() == '');
+
+  // Verify rows is independent.
+  board1.load('r .\n. N');
+  U.assert(board1.serialize() == 'r .\n. N');
+  U.assert(board2.serialize() == '');
+
+  board2 = board1.copy();
+  U.assert(board1.serialize() == 'r .\n. N');
+  U.assert(board2.serialize() == 'r .\n. N');
+
+  // Verify the Piece is independent.
+  board1.rows[0][0].piece.moves = 1;
+  U.assert(board1.serialize() == 'r1 .\n.  N');
+  U.assert(board2.serialize() == 'r .\n. N');
+
+  // Verify the Square is independent.
+  board1.rows[0][0].piece = null;
+  U.assert(board1.serialize() == '. .\n. N');
+  U.assert(board2.serialize() == 'r .\n. N');
+}
+
+
 export function testBoardLoad(U) {
   let board = new Board();
   U.assert(board.serialize() == '');

@@ -1,7 +1,7 @@
 import {Board} from './board.js';
 
 
-export function testKnightLegalmoves(U) {
+export function test_Knight_legalmoves(U) {
   let board = new Board();
   board.load(`
 . . .

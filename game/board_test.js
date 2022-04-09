@@ -1,7 +1,7 @@
 import {Board, numToLetters_} from './board.js';
 
 
-export function testBoardCopy(U) {
+export function test_Board_copy(U) {
   let board1 = new Board();
   let board2 = board1.copy();
   U.assert(board1.serialize() == '');
@@ -28,7 +28,7 @@ export function testBoardCopy(U) {
 }
 
 
-export function testBoardLegalMoves(U) {
+export function test_Board_legalMoves(U) {
   let board = new Board();
   let moves = Array.from(board.legalmoves(true), move => move.join('-')).sort();
   U.assert(moves.join(',') == '');
@@ -49,7 +49,7 @@ h2-h3,h2-h4`);
 }
 
 
-export function testBoardLoad(U) {
+export function test_Board_load(U) {
   let board = new Board();
   U.assert(board.serialize() == '');
 
@@ -72,7 +72,7 @@ export function testBoardLoad(U) {
 }
 
 
-export function testBoardReset(U) {
+export function test_Board_reset(U) {
   let board = new Board();
   U.assert(board.rows instanceof Array);
   U.assert(board.rows.length == 0);
@@ -81,7 +81,7 @@ export function testBoardReset(U) {
 }
 
 
-export function testBoardSerialize(U) {
+export function test_Board_serialize(U) {
   let board = new Board();
   U.assert(board.serialize() == '');
 
@@ -120,7 +120,7 @@ R   N   B   Q   K   B   N   R`);
 }
 
 
-export function testNumToLetters(U) {
+export function test_numToLetters_(U) {
   U.assert(numToLetters_(0) == 'a');
   U.assert(numToLetters_(1) == 'b');
   U.assert(numToLetters_(25) == 'z');
@@ -131,7 +131,7 @@ export function testNumToLetters(U) {
 }
 
 
-export function testSquareName(U) {
+export function test_Square_name(U) {
   let board = new Board();
   board.reset();
   U.assert(board.rows[0][0].name, 'a8');

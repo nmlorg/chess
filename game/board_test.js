@@ -1,4 +1,4 @@
-import {Board, numToLetters_} from './board.js';
+import {Board, lettersToNums_, numToLetters_} from './board.js';
 
 
 export function test_Board_copy(U) {
@@ -72,6 +72,19 @@ export function test_Board_load(U) {
 }
 
 
+export function test_Board_move(U) {
+  let board1 = new Board();
+  board1.load('r .\n. P');
+  let board2 = board1.move('a2', 'a1');
+  U.assert(board1.serialize() == 'r .\n. P');
+  U.assert(board2.serialize() == '.  .\nr1 P');
+
+  let board3 = board1.move('b1', 'a2');
+  U.assert(board2.serialize() == '.  .\nr1 P');
+  U.assert(board3.serialize() == 'P1 .\n.  .');
+}
+
+
 export function test_Board_reset(U) {
   let board = new Board();
   U.assert(board.rows instanceof Array);
@@ -117,6 +130,19 @@ p   p   p   p   p   p   p   p
 .   .   .   .   .   .   .   .
 P   P1  P   P   P   P   P   P
 R   N   B   Q   K   B   N   R`);
+}
+
+
+export function test_lettersToNums_(U) {
+  U.assert(lettersToNums_('a1').join(',') == '0,0');
+  U.assert(lettersToNums_('b2').join(',') == '1,1');
+  U.assert(lettersToNums_('z26').join(',') == '25,25');
+  U.assert(lettersToNums_('aa27').join(',') == '26,26');
+  U.assert(lettersToNums_('ab28').join(',') == '27,27');
+  U.assert(lettersToNums_('bi61').join(',') == '60,60');
+  U.assert(lettersToNums_('all1000').join(',') == '999,999');
+  U.assert(lettersToNums_('a').join(',') == '-1,-1');
+  U.assert(lettersToNums_('A1').join(',') == '-1,-1');
 }
 
 

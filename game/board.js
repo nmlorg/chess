@@ -59,6 +59,17 @@ export class Board {
     }
   }
 
+  move(from, to) {
+    let [fromx, fromy] = lettersToNums_(from);
+    let [tox, toy] = lettersToNums_(to);
+    let board = this.copy();
+    let frompiece = board.rows[this.rows.length - fromy - 1][fromx].piece;
+    frompiece.moves++;
+    board.rows[this.rows.length - toy - 1][tox].piece = frompiece;
+    board.rows[this.rows.length - fromy - 1][fromx].piece = null;
+    return board;
+  }
+
   reset() {
     this.load(`\
 r n b q k b n r
@@ -105,6 +116,22 @@ R N B Q K B N R`);
     }
     return namerows.join('\n');
   }
+}
+
+
+export function lettersToNums_(letters) {
+  let match = letters.match(/^([a-z]+)([0-9]+)$/);
+  if (!match)
+    return [-1, -1];
+
+  let col = 0;
+  for (let i = 0; i < match[1].length; i++) {
+    col *= 26;
+    col += match[1].charCodeAt(i) - 97 + 1;
+  }
+
+  let row = Number(match[2]);
+  return [col - 1, row - 1];
 }
 
 

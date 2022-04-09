@@ -18,6 +18,14 @@ export class Board {
     return board;
   }
 
+  *legalmoves(player) {
+    for (let row of this.rows)
+      for (let square of row)
+        if (square.piece?.player == player)
+          for (let move of square.piece.legalmoves())
+            yield [square.name, move];
+  }
+
   load(str) {
     let pieceNames = {
         r: Rook,

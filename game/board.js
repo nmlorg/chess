@@ -32,9 +32,9 @@ export class Board {
     let lines = str.trim().replace(/\r\n/g, '\n').split('\n');
     if (!lines[0])  // ''.split('\n') == ['']
       return;
+    this.rows.length = lines.length;
     for (let y = 0; y < lines.length; y++) {
-      let row = [];
-      this.rows.push(row);
+      let row = this.rows[y] = [];
       let line = lines[y].split(/\s+/);
       for (let x = 0; x < line.length; x++) {
         let square = new Square(this, x, y);

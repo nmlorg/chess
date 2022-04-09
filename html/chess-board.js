@@ -12,9 +12,8 @@ export class ChessBoardElement extends HTMLElement {
     this.update();
   }
 
-  getsquare(x, y) {
-    let rows = this.querySelectorAll('tr');
-    return rows[y].querySelectorAll('chess-square')[x];
+  getsquare(name) {
+    return this.querySelector(`chess-square.${name}`);
   }
 
   update() {
@@ -30,19 +29,20 @@ class ChessSquareElement extends HTMLElement {
   constructor(board, square) {
     super();
     this.square = square;
+    this.classList.add(square.name);
     this.addEventListener('mouseover', e => {
       if (!square.piece)
         return;
       this.classList.add('source');
       for (let target of square.piece.legalmoves())
-        board.getsquare(target.x, target.y).classList.add('target');
+        board.getsquare(target).classList.add('target');
     });
     this.addEventListener('mouseout', e => {
       if (!square.piece)
         return;
       this.classList.remove('source');
       for (let target of square.piece.legalmoves())
-        board.getsquare(target.x, target.y).classList.remove('target');
+        board.getsquare(target).classList.remove('target');
     });
   }
 

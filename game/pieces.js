@@ -31,10 +31,10 @@ export class Knight extends Piece {
       for (let x of ['left', 'right']) {
         let square = this.square[y]?.[y]?.[x];
         if (square && (square.piece?.player != this.player))
-          yield square;
+          yield square.name;
         square = this.square[y]?.[x]?.[x];
         if (square && (square.piece?.player != this.player))
-          yield square;
+          yield square.name;
       }
     }
   }
@@ -45,9 +45,9 @@ export class Pawn extends Piece {
   *legalmoves() {
     let dir = this.player ? 'up' : 'down';
     if (this.square[dir] && !this.square[dir].piece) {
-      yield this.square[dir];
+      yield this.square[dir].name;
       if (!this.moves && this.square[dir][dir] && !this.square[dir][dir].piece)
-        yield this.square[dir][dir];
+        yield this.square[dir][dir].name;
     }
   }
 }

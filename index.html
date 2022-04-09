@@ -28,11 +28,14 @@ chess-square.target {
 </style>
 <script type="module">
 import {Board} from './game/board.js';
+import {Game} from './game/game.js';
+
 import {ChessBoardElement} from './html/chess-board.js';
 
 
 let board = new Board();
 board.reset();
+let game = new Game(board);
 
-document.body.appendChild(new ChessBoardElement(board));
+document.body.appendChild(new ChessBoardElement(game));
 </script>

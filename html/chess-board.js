@@ -1,8 +1,9 @@
 export class ChessBoardElement extends HTMLElement {
-  constructor(board) {
+  constructor(game) {
     super();
+    this.game = game;
     let table = this.appendChild(document.createElement('table'));
-    for (let row of board.rows) {
+    for (let row of game.board.rows) {
       let tr = table.appendChild(document.createElement('tr'));
       for (let square of row) {
         let td = tr.appendChild(document.createElement('td'));
@@ -28,26 +29,32 @@ customElements.define('chess-board', ChessBoardElement);
 class ChessSquareElement extends HTMLElement {
   constructor(board, square) {
     super();
+    this.board = board;
     this.square = square;
     this.classList.add(square.name);
     this.addEventListener('mouseover', e => {
-      if (!square.piece)
+      if (!this.moves.length)
         return;
       this.classList.add('source');
-      for (let target of square.piece.legalmoves())
+      for (let target of this.moves)
         board.getsquare(target).classList.add('target');
     });
     this.addEventListener('mouseout', e => {
-      if (!square.piece)
+      if (!this.moves.length)
         return;
       this.classList.remove('source');
-      for (let target of square.piece.legalmoves())
+      for (let target of this.moves)
         board.getsquare(target).classList.remove('target');
     });
   }
 
   update() {
-    this.textContent = this.square.piece?.constructor.name;
+    let piece = this.square.piece;
+    this.textContent = piece?.constructor.name;
+    if (piece?.player != this.board.game.player)
+      this.moves = [];
+    else
+      this.moves = Array.from(piece.legalmoves());
   }
 }
 

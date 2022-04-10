@@ -62,12 +62,10 @@ export class Board {
   move(from, to) {
     let [fromx, fromy] = lettersToNums_(from);
     let [tox, toy] = lettersToNums_(to);
-    let board = this.copy();
-    let frompiece = board.rows[this.rows.length - fromy - 1][fromx].piece;
+    let frompiece = this.rows[this.rows.length - fromy - 1][fromx].piece;
     frompiece.moves++;
-    board.rows[this.rows.length - toy - 1][tox].piece = frompiece;
-    board.rows[this.rows.length - fromy - 1][fromx].piece = null;
-    return board;
+    this.rows[this.rows.length - toy - 1][tox].piece = frompiece;
+    this.rows[this.rows.length - fromy - 1][fromx].piece = null;
   }
 
   reset() {

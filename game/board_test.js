@@ -73,15 +73,15 @@ export function test_Board_load(U) {
 
 
 export function test_Board_move(U) {
-  let board1 = new Board();
-  board1.load('r .\n. P');
-  let board2 = board1.move('a2', 'a1');
-  U.assert(board1.serialize() == 'r .\n. P');
-  U.assert(board2.serialize() == '.  .\nr1 P');
+  let board = new Board();
+  board.load('B .\nr P');
+  U.assert(board.serialize() == 'B .\nr P');
 
-  let board3 = board1.move('b1', 'a2');
-  U.assert(board2.serialize() == '.  .\nr1 P');
-  U.assert(board3.serialize() == 'P1 .\n.  .');
+  board.move('a1', 'a2');
+  U.assert(board.serialize() == 'r1 .\n.  P');
+
+  board.move('b1', 'a2');
+  U.assert(board.serialize() == 'P1 .\n.  .');
 }
 
 

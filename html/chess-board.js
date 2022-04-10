@@ -10,6 +10,7 @@ export class ChessBoardElement extends HTMLElement {
         td.appendChild(new ChessSquareElement(this, square));
       }
     }
+    this.activeElt = null;
     this.update();
   }
 
@@ -18,8 +19,8 @@ export class ChessBoardElement extends HTMLElement {
   }
 
   update() {
-    for (let square of this.querySelectorAll('chess-square'))
-      square.update();
+    for (let squareElt of this.querySelectorAll('chess-square'))
+      squareElt.update();
   }
 }
 
@@ -27,9 +28,9 @@ customElements.define('chess-board', ChessBoardElement);
 
 
 class ChessSquareElement extends HTMLElement {
-  constructor(board, square) {
+  constructor(boardElt, square) {
     super();
-    this.board = board;
+    this.boardElt = boardElt;
     this.square = square;
     this.classList.add(square.name);
     this.addEventListener('mouseover', e => {
@@ -37,21 +38,40 @@ class ChessSquareElement extends HTMLElement {
         return;
       this.classList.add('source');
       for (let target of this.moves)
-        board.getsquare(target).classList.add('target');
+        boardElt.getsquare(target).classList.add('target');
     });
     this.addEventListener('mouseout', e => {
       if (!this.moves.length)
         return;
       this.classList.remove('source');
       for (let target of this.moves)
-        board.getsquare(target).classList.remove('target');
+        boardElt.getsquare(target).classList.remove('target');
+    });
+    this.addEventListener('click', e => {
+      if (!this.boardElt.activeElt) {
+        if (this.moves.length) {
+          this.boardElt.activeElt = this;
+          this.classList.add('selected');
+        }
+        return;
+      }
+
+      for (let target of this.boardElt.activeElt.moves) {
+        if (target == this.square.name) {
+          this.boardElt.game.move(this.boardElt.activeElt.square.name, this.square.name);
+          this.boardElt.activeElt.classList.remove('selected');
+          this.boardElt.activeElt = null;
+          this.boardElt.update();
+          return;
+        }
+      }
     });
   }
 
   update() {
     let piece = this.square.piece;
     this.textContent = piece?.constructor.name;
-    if (piece?.player != this.board.game.player)
+    if (piece?.player != this.boardElt.game.player)
       this.moves = [];
     else
       this.moves = Array.from(piece.legalmoves());

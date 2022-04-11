@@ -1,11 +1,11 @@
 export class Game {
   constructor(board) {
     this.board = board;
-    this.player = true;
+    this.player = 0;
   }
 
   move(from, to) {
     this.board.move(from, to);
-    this.player = !this.player;
+    this.player = 1 - this.player;
   }
 }

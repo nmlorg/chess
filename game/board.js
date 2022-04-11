@@ -27,15 +27,7 @@ export class Board {
   }
 
   load(str) {
-    let pieceNames = {
-        r: Rook,
-        n: Knight,
-        b: Bishop,
-        q: Queen,
-        k: King,
-        p: Pawn,
-    };
-
+    let pieceTypes = [Bishop, King, Knight, Pawn, Queen, Rook];
     this.rows = [];
     let lines = str.trim().replace(/\r\n/g, '\n').split('\n');
     if (!lines[0])  // ''.split('\n') == ['']
@@ -48,10 +40,16 @@ export class Board {
         let square = new Square(this, x, y);
         row.push(square);
         let desc = line[x];
-        if (desc == '.')
+        let piece = null;
+        for (let pieceType of pieceTypes) {
+          let player = pieceType.ascii.indexOf(desc[0]);
+          if (player != -1) {
+            piece = new pieceType(square, player);
+            break;
+          }
+        }
+        if (!piece)
           continue;
-        let namelower = desc[0].toLowerCase();
-        let piece = new pieceNames[namelower](square, namelower != desc[0]);
         square.piece = piece;
         if (desc.length > 1)
           piece.moves = Number(desc.substr(1));
@@ -92,13 +90,7 @@ R N B Q K B N R`);
           continue;
         }
         let piece = square.piece;
-        let name;
-        if (piece instanceof Knight)
-          name = 'N';
-        else
-          name = piece.constructor.name[0];
-        if (!piece.player)
-          name = name.toLowerCase();
+        let name = piece.constructor.ascii[piece.player];
         if (piece.moves)
           name += piece.moves;
         namerow.push(name);

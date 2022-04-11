@@ -30,11 +30,11 @@ export function test_Board_copy(U) {
 
 export function test_Board_legalMoves(U) {
   let board = new Board();
-  let moves = Array.from(board.legalmoves(true), move => move.join('-')).sort();
+  let moves = Array.from(board.legalmoves(0), move => move.join('-')).sort();
   U.assert(moves.join(',') == '');
 
   board.reset();
-  moves = Array.from(board.legalmoves(true), move => move.join('-')).sort();
+  moves = Array.from(board.legalmoves(0), move => move.join('-')).sort();
   U.assert(moves.join(',') == `\
 a2-a3,a2-a4,\
 b1-a3,b1-c3,\

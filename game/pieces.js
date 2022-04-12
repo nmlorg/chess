@@ -4,12 +4,6 @@ class Piece {
     this.player = player;
     this.moves = 0;
   }
-
-  copy(square) {
-    let piece = new this.constructor(square, this.player);
-    piece.moves = this.moves;
-    return piece;
-  }
 }
 
 

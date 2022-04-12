@@ -13,8 +13,7 @@ export class Board {
 
   copy() {
     let board = new this.constructor();
-    for (let row of this.rows)
-      board.rows.push(row.map(square => square.copy(board)));
+    board.load(this.serialize());
     return board;
   }
 
@@ -144,13 +143,6 @@ class Square {
     this.y = y;
     this.name = `${numToLetters_(x)}${board.rows.length - y}`;
     this.piece = null;
-  }
-
-  copy(board) {
-    let square = new this.constructor(board, this.x, this.y);
-    if (this.piece)
-      square.piece = this.piece.copy(square);
-    return square;
   }
 
   get up() {

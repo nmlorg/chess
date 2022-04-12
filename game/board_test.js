@@ -60,7 +60,6 @@ export function test_Board_load(U) {
   U.assert(board.get('a1').piece.constructor.name == 'Pawn');
 
   board.load('r .\n. N');
-console.log(board);
   let a1 = board.get('a1');
   let a2 = board.get('a2');
   let b1 = board.get('b1');

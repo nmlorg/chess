@@ -12,22 +12,30 @@
 }
 
 chess-square {
-  border: 2px solid red;
+  background: #ddd;
+  border: 2px solid black;
   display: block;
+  font-size: var(--size);
   height: var(--size);
+  line-height: var(--size);
+  text-align: center;
   width: var(--size);
 }
 
-chess-square.selected {
-  background-color: green;
+chess-square.black-attacked {
+  background: linear-gradient(180deg, #fdd 0%, #ddd 25%, #ddd 75%, #ddd 100%);
 }
 
-chess-square.source {
-  background-color: red;
+chess-square.white-attacked {
+  background: linear-gradient(180deg, #ddd 0%, #ddd 25%, #ddd 75%, #fdd 100%);
 }
 
-chess-square.target {
-  background-color: blue;
+chess-square.black-attacked.white-attacked {
+  background: linear-gradient(180deg, #fdd 0%, #ddd 25%, #ddd 75%, #fdd 100%);
+}
+
+chess-square.attacking {
+  border-color: #080;
 }
 </style>
 <script type="module">

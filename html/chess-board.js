@@ -20,8 +20,26 @@ export class ChessBoardElement extends HTMLElement {
   }
 
   update() {
-    for (let squareElt of this.querySelectorAll('chess-square'))
-      squareElt.update();
+    let attacks = {};
+
+    for (let squareElt of this.querySelectorAll('chess-square')) {
+      squareElt.classList.remove('black-attacked');
+      squareElt.classList.remove('white-attacked');
+      squareElt.classList.remove('attacking');
+      squareElt.update(attacks);
+    }
+
+    for (let [target, attackers] of Object.entries(attacks)) {
+      let squareElt = this.getsquare(target);
+      squareElt.title = `${squareElt.title}\n\nAttacked from:`;
+      for (let attacker of attackers) {
+        squareElt.title = `${squareElt.title}\n \u2022 ${attacker}`;
+        if (this.getsquare(attacker).square.piece.player)
+          squareElt.classList.add('black-attacked');
+        else
+          squareElt.classList.add('white-attacked');
+      }
+    }
   }
 }
 
@@ -34,20 +52,6 @@ class ChessSquareElement extends HTMLElement {
     this.boardElt = boardElt;
     this.square = square;
     this.classList.add(square.name);
-    this.addEventListener('mouseover', e => {
-      if (!this.moves.length)
-        return;
-      this.classList.add('source');
-      for (let target of this.moves)
-        boardElt.getsquare(target).classList.add('target');
-    });
-    this.addEventListener('mouseout', e => {
-      if (!this.moves.length)
-        return;
-      this.classList.remove('source');
-      for (let target of this.moves)
-        boardElt.getsquare(target).classList.remove('target');
-    });
     this.addEventListener('click', e => {
       if (!this.boardElt.activeElt) {
         if (this.moves.length) {
@@ -69,13 +73,30 @@ class ChessSquareElement extends HTMLElement {
     });
   }
 
-  update() {
+  update(attacks) {
+    this.title = this.square.name;
+    this.moves = [];
     let piece = this.square.piece;
-    this.textContent = piece?.constructor.name;
-    if (piece?.player != this.boardElt.game.player)
-      this.moves = [];
-    else
-      this.moves = Array.from(piece.legalmoves());
+    if (!piece) {
+      this.textContent = '';
+      return;
+    }
+
+    this.textContent = piece.constructor.glyph[piece.player];
+    this.title = `${this.title} \u2014 ${piece.constructor.name}`;
+    let moves = Array.from(piece.legalmoves());
+    if (moves.length) {
+      this.classList.add('attacking');
+      this.title = `${this.title}\n\nAttacking:`;
+      for (let target of moves) {
+        this.title = `${this.title}\n \u2022 ${target}`;
+        if (!attacks[target])
+          attacks[target] = [];
+        attacks[target].push(this.square.name);
+      }
+      if (piece.player == this.boardElt.game.player)
+        this.moves = moves;
+    }
   }
 }
 

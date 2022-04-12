@@ -50,11 +50,17 @@ export class Pawn extends Piece {
 
   *legalmoves() {
     let dir = this.player ? 'down' : 'up';
-    if (this.square[dir] && !this.square[dir].piece) {
-      yield this.square[dir].name;
-      if (!this.moves && this.square[dir][dir] && !this.square[dir][dir].piece)
-        yield this.square[dir][dir].name;
+    let forward = this.square[dir];
+    if (!forward)
+      return;
+    if (!forward.piece) {
+      yield forward.name;
+      if (!this.moves && forward[dir] && !forward[dir].piece)
+        yield forward[dir].name;
     }
+    for (let x of ['left', 'right'])
+      if (forward[x] && forward[x].piece && (forward[x].piece.player != this.player))
+        yield forward[x].name;
   }
 }
 

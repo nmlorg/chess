@@ -1,4 +1,4 @@
-import {Board, lettersToNums_, numToLetters_} from './board.js';
+import {Board, Position} from './board.js';
 
 
 export function test_Board_copy(U) {
@@ -7,7 +7,7 @@ export function test_Board_copy(U) {
   U.assert(board1.serialize() == '');
   U.assert(board2.serialize() == '');
 
-  // Verify rows is independent.
+  // Verify Board.rows is independent.
   board1.load('r .\n. N');
   U.assert(board1.serialize() == 'r .\n. N');
   U.assert(board2.serialize() == '');
@@ -17,18 +17,18 @@ export function test_Board_copy(U) {
   U.assert(board2.serialize() == 'r .\n. N');
 
   // Verify the Piece is independent.
-  board1.rows[0][0].piece.moves = 1;
+  board1.get('a2').piece.moves = 1;
   U.assert(board1.serialize() == 'r1 .\n.  N');
   U.assert(board2.serialize() == 'r .\n. N');
 
   // Verify the Square is independent.
-  board1.rows[0][0].piece = null;
+  board1.get('a2').piece = null;
   U.assert(board1.serialize() == '. .\n. N');
   U.assert(board2.serialize() == 'r .\n. N');
 }
 
 
-export function test_Board_legalMoves(U) {
+export function test_Board_legalmoves(U) {
   let board = new Board();
   let moves = Array.from(board.legalmoves(0), move => move.join('-')).sort();
   U.assert(moves.join(',') == '');
@@ -57,18 +57,39 @@ export function test_Board_load(U) {
   U.assert(board.serialize() == '');
 
   board.load('P');
-  U.assert(board.rows.length == 1);
-  U.assert(board.rows[0].length == 1);
-  U.assert(board.rows[0][0].piece.constructor.name == 'Pawn');
+  U.assert(board.get('a1').piece.constructor.name == 'Pawn');
 
   board.load('r .\n. N');
-  U.assert(board.rows.length == 2);
-  U.assert(board.rows[0].length == 2);
-  U.assert(board.rows[1].length == 2);
-  U.assert(board.rows[0][0].piece.constructor.name == 'Rook');
-  U.assert(!board.rows[0][1].piece);
-  U.assert(!board.rows[1][0].piece);
-  U.assert(board.rows[1][1].piece.constructor.name == 'Knight');
+console.log(board);
+  let a1 = board.get('a1');
+  let a2 = board.get('a2');
+  let b1 = board.get('b1');
+  let b2 = board.get('b2');
+  U.assert(a1.piece == null);
+  U.assert(a1.down == null);
+  U.assert(a1.left == null);
+  U.assert(a1.right == b1);
+  U.assert(a1.up == a2);
+
+  U.assert(a2.piece.constructor.name == 'Rook');
+  U.assert(a2.piece.square == a2);
+  U.assert(a2.down == a1);
+  U.assert(a2.left == null);
+  U.assert(a2.right == b2);
+  U.assert(a2.up == null);
+
+  U.assert(b1.piece.constructor.name == 'Knight');
+  U.assert(b1.piece.square == b1);
+  U.assert(b1.down == null);
+  U.assert(b1.left == a1);
+  U.assert(b1.right == null);
+  U.assert(b1.up == b2);
+
+  U.assert(b2.piece == null);
+  U.assert(b2.down == b1);
+  U.assert(b2.left == a2);
+  U.assert(b2.right == null);
+  U.assert(b2.up == null);
 }
 
 
@@ -91,6 +112,7 @@ export function test_Board_reset(U) {
   U.assert(board.rows.length == 0);
   board.reset();
   U.assert(board.rows.length == 8);
+  U.assert(board.rows[0].length == 8);
 }
 
 
@@ -109,7 +131,7 @@ p p p p p p p p
 P P P P P P P P
 R N B Q K B N R`);
 
-  board.rows[6][1].piece.moves = 1;
+  board.get('b2').piece.moves = 1;
   U.assert(board.serialize() == `\
 r  n  b  q  k  b  n  r
 p  p  p  p  p  p  p  p
@@ -120,7 +142,7 @@ p  p  p  p  p  p  p  p
 P  P1 P  P  P  P  P  P
 R  N  B  Q  K  B  N  R`);
 
-  board.rows[0][5].piece.moves = 10;
+  board.get('f8').piece.moves = 10;
   U.assert(board.serialize() == `\
 r   n   b   q   k   b10 n   r
 p   p   p   p   p   p   p   p
@@ -133,34 +155,25 @@ R   N   B   Q   K   B   N   R`);
 }
 
 
-export function test_lettersToNums_(U) {
-  U.assert(lettersToNums_('a1').join(',') == '0,0');
-  U.assert(lettersToNums_('b2').join(',') == '1,1');
-  U.assert(lettersToNums_('z26').join(',') == '25,25');
-  U.assert(lettersToNums_('aa27').join(',') == '26,26');
-  U.assert(lettersToNums_('ab28').join(',') == '27,27');
-  U.assert(lettersToNums_('bi61').join(',') == '60,60');
-  U.assert(lettersToNums_('all1000').join(',') == '999,999');
-  U.assert(lettersToNums_('a').join(',') == '-1,-1');
-  U.assert(lettersToNums_('A1').join(',') == '-1,-1');
+export function test_Position_fromXY(U) {
+  U.assert(Position.fromXY(0, 0) == 'a1');
+  U.assert(Position.fromXY(1, 1) == 'b2');
+  U.assert(Position.fromXY(25, 25) == 'z26');
+  U.assert(Position.fromXY(26, 26) == 'aa27');
+  U.assert(Position.fromXY(27, 27) == 'ab28');
+  U.assert(Position.fromXY(60, 60) == 'bi61');
+  U.assert(Position.fromXY(999, 999) == 'all1000');
 }
 
 
-export function test_numToLetters_(U) {
-  U.assert(numToLetters_(0) == 'a');
-  U.assert(numToLetters_(1) == 'b');
-  U.assert(numToLetters_(25) == 'z');
-  U.assert(numToLetters_(26) == 'aa');
-  U.assert(numToLetters_(27) == 'ab');
-  U.assert(numToLetters_(60) == 'bi');
-  U.assert(numToLetters_(999) == 'all');
-}
-
-
-export function test_Square_name(U) {
-  let board = new Board();
-  board.reset();
-  U.assert(board.rows[0][0].name, 'a8');
-  U.assert(board.rows[7][0].name, 'a1');
-  U.assert(board.rows[7][7].name, 'h1');
+export function test_Position_toXY(U) {
+  U.assert(Position.toXY('a1').join(',') == '0,0');
+  U.assert(Position.toXY('b2').join(',') == '1,1');
+  U.assert(Position.toXY('z26').join(',') == '25,25');
+  U.assert(Position.toXY('aa27').join(',') == '26,26');
+  U.assert(Position.toXY('ab28').join(',') == '27,27');
+  U.assert(Position.toXY('bi61').join(',') == '60,60');
+  U.assert(Position.toXY('all1000').join(',') == '999,999');
+  U.assert(Position.toXY('a').join(',') == '-1,-1');
+  U.assert(Position.toXY('A1').join(',') == '-1,-1');
 }

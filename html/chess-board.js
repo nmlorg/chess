@@ -3,7 +3,8 @@ export class ChessBoardElement extends HTMLElement {
     super();
     this.game = game;
     let table = this.appendChild(document.createElement('table'));
-    for (let row of game.board.rows) {
+    for (let y = game.board.rows.length - 1; y >= 0; y--) {
+      let row = game.board.rows[y];
       let tr = table.appendChild(document.createElement('tr'));
       for (let square of row) {
         let td = tr.appendChild(document.createElement('td'));

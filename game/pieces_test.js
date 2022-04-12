@@ -8,7 +8,7 @@ export function test_Knight_legalmoves(U) {
 . n .
 . . .
 `);
-  let piece = board.rows[1][1].piece;
+  let piece = board.get('b2').piece;
   let moves = Array.from(piece.legalmoves()).sort();
   U.assert(moves.join(',') == '');
 
@@ -18,7 +18,7 @@ export function test_Knight_legalmoves(U) {
 . . .
 . . .
 `);
-  piece = board.rows[1][1].piece;
+  piece = board.get('b3').piece;
   moves = Array.from(piece.legalmoves()).sort();
   U.assert(moves.join(',') == 'a1,c1');
 
@@ -29,7 +29,7 @@ export function test_Knight_legalmoves(U) {
 . . . . .
 . . . . .
 `);
-  piece = board.rows[2][2].piece;
+  piece = board.get('c3').piece;
   moves = Array.from(piece.legalmoves()).sort();
   U.assert(moves.join(',') == 'a2,a4,b1,b5,d1,d5,e2,e4');
 }

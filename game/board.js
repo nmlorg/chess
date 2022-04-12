@@ -34,9 +34,9 @@ export class Board {
     this.rows.length = lines.length;
     for (let y = 0; y < lines.length; y++) {
       let row = this.rows[y] = [];
-      let line = lines[y].split(/\s+/);
+      let line = lines[lines.length - 1 - y].split(/\s+/);
       for (let x = 0; x < line.length; x++) {
-        let square = new Square(this, x, y);
+        let square = new Square(Position.fromXY(x, y));
         row.push(square);
         let desc = line[x];
         let piece = null;
@@ -54,15 +54,39 @@ export class Board {
           piece.moves = Number(desc.substr(1));
       }
     }
+
+    let height = this.rows.length;
+    let width = this.rows[0].length;
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        let square = this.rows[y][x];
+        if (x > 0)
+          square.left = this.rows[y][x - 1];
+        if (x < width - 1)
+          square.right = this.rows[y][x + 1];
+        if (y > 0)
+          square.down = this.rows[y - 1][x];
+        if (y < height - 1)
+          square.up = this.rows[y + 1][x];
+      }
+    }
+  }
+
+  get(position) {
+    let [x, y] = Position.toXY(position);
+    return this.rows[y][x];
   }
 
   move(from, to) {
-    let [fromx, fromy] = lettersToNums_(from);
-    let [tox, toy] = lettersToNums_(to);
-    let frompiece = this.rows[this.rows.length - fromy - 1][fromx].piece;
-    frompiece.moves++;
-    this.rows[this.rows.length - toy - 1][tox].piece = frompiece;
-    this.rows[this.rows.length - fromy - 1][fromx].piece = null;
+    let fromsquare = this.get(from);
+    let tosquare = this.get(to);
+    let piece = fromsquare.piece;
+    if (piece) {
+      piece.moves++;
+      piece.square = tosquare;
+      tosquare.piece = piece;
+      fromsquare.piece = null;
+    }
   }
 
   reset() {
@@ -82,7 +106,7 @@ R N B Q K B N R`);
     let namelen = 0;
     for (let row of this.rows) {
       let namerow = [];
-      namerows.push(namerow);
+      namerows.unshift(namerow);
       for (let square of row) {
         if (!square.piece) {
           namerow.push('.');
@@ -108,56 +132,43 @@ R N B Q K B N R`);
 }
 
 
-export function lettersToNums_(letters) {
-  let match = letters.match(/^([a-z]+)([0-9]+)$/);
-  if (!match)
-    return [-1, -1];
-
-  let col = 0;
-  for (let i = 0; i < match[1].length; i++) {
-    col *= 26;
-    col += match[1].charCodeAt(i) - 97 + 1;
+export class Position {
+  static fromXY(x, y) {
+    // See https://github.com/nmlorg/chess/issues/1.
+    let letters = String.fromCharCode(97 + x % 26);
+    x = Math.floor(x / 26);
+    while (x) {
+      letters = `${String.fromCharCode(97 + x % 26 - 1)}${letters}`;
+      x = Math.floor(x / 26);
+    }
+    return `${letters}${y + 1}`;
   }
 
-  let row = Number(match[2]);
-  return [col - 1, row - 1];
-}
+  static toXY(str) {
+    let match = str.match(/^([a-z]+)([0-9]+)$/);
+    if (!match)
+      return [-1, -1];
 
+    let col = 0;
+    for (let i = 0; i < match[1].length; i++) {
+      col *= 26;
+      col += match[1].charCodeAt(i) - 97 + 1;
+    }
 
-export function numToLetters_(num) {
-  // See https://github.com/nmlorg/chess/issues/1.
-  let letters = String.fromCharCode(97 + num % 26);
-  num = Math.floor(num / 26);
-  while (num) {
-    letters = `${String.fromCharCode(97 + num % 26 - 1)}${letters}`;
-    num = Math.floor(num / 26);
+    let row = Number(match[2]);
+    return [col - 1, row - 1];
   }
-  return letters;
 }
 
 
 class Square {
-  constructor(board, x, y) {
-    this.board = board;
-    this.x = x;
-    this.y = y;
-    this.name = `${numToLetters_(x)}${board.rows.length - y}`;
-    this.piece = null;
-  }
+  down = null;
+  left = null;
+  piece = null;
+  right = null;
+  up = null;
 
-  get up() {
-    return this.board.getsquare(this.x, this.y - 1);
-  }
-
-  get down() {
-    return this.board.getsquare(this.x, this.y + 1);
-  }
-
-  get left() {
-    return this.board.getsquare(this.x - 1, this.y);
-  }
-
-  get right() {
-    return this.board.getsquare(this.x + 1, this.y);
+  constructor(name) {
+    this.name = name;
   }
 }

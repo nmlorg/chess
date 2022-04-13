@@ -12,6 +12,17 @@ export class Bishop extends Piece {
   static glyph = ['\u2657', '\u265d'];
 
   *legalmoves() {
+    for (let y of ['up', 'down']) {
+      for (let x of ['left', 'right']) {
+        let square = this.square[y]?.[x];
+        while (square && (!square.piece || square.piece.player != this.player)) {
+          yield square.name;
+          if (square.piece)
+            break;
+          square = square[y]?.[x];
+        }
+      }
+    }
   }
 }
 

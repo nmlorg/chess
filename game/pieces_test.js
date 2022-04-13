@@ -1,6 +1,30 @@
 import {Board} from './board.js';
 
 
+export function test_Bishop_legalmoves(U) {
+  let board = new Board();
+  board.load(`
+. . . . .
+. . . . .
+. . b . .
+. . . . .
+. . . . .
+`);
+  let piece = board.get('c3').piece;
+  let moves = Array.from(piece.legalmoves()).sort();
+  U.assert(moves.join(',') == 'a1,a5,b2,b4,d2,d4,e1,e5');
+
+  board.load(`
+. . b . .
+. r . R .
+. . . . .
+`);
+  piece = board.get('c3').piece;
+  moves = Array.from(piece.legalmoves()).sort();
+  U.assert(moves.join(',') == 'd2');
+}
+
+
 export function test_Knight_legalmoves(U) {
   let board = new Board();
   board.load(`

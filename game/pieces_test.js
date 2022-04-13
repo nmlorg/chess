@@ -111,6 +111,21 @@ r R .
 }
 
 
+export function test_Queen_legalmoves(U) {
+  let board = new Board();
+  board.load(`
+. . . . .
+. . . . .
+. . q . .
+. . . . .
+. . . . .
+`);
+  let piece = board.get('c3').piece;
+  let moves = Array.from(piece.legalmoves()).sort();
+  U.assert(moves.join(',') == 'a1,a3,a5,b2,b3,b4,c1,c2,c4,c5,d2,d3,d4,e1,e3,e5');
+}
+
+
 export function test_Rook_legalmoves(U) {
   let board = new Board();
   board.load(`

@@ -83,6 +83,8 @@ export class Queen extends Piece {
   static glyph = ['\u2655', '\u265b'];
 
   *legalmoves() {
+    yield* Bishop.prototype.legalmoves.call(this);
+    yield* Rook.prototype.legalmoves.call(this);
   }
 }
 

@@ -32,6 +32,21 @@ export class King extends Piece {
   static glyph = ['\u2654', '\u265a'];
 
   *legalmoves() {
+    for (let y of ['up', 'down']) {
+      let square = this.square[y];
+      if (!square)
+        continue;
+      if (square.piece?.player != this.player)
+        yield square.name;  // TODO: this.player must not be in check after moving to square.
+      for (let x of ['left', 'right'])
+        if (square[x]?.piece?.player != this.player)
+          yield square[x].name;
+    }
+    for (let x of ['left', 'right'])
+      if (this.square[x]?.piece?.player != this.player)
+        yield this.square[x].name;
+
+    // TODO: https://en.wikipedia.org/wiki/Chess#Castling
   }
 }
 

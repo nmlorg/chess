@@ -25,6 +25,45 @@ export function test_Bishop_legalmoves(U) {
 }
 
 
+export function test_King_legalmoves(U) {
+  let board = new Board();
+  board.load(`
+. . . . .
+. . . . .
+. . k . .
+. . . . .
+. . . . .
+`);
+  let piece = board.get('c3').piece;
+  let moves = Array.from(piece.legalmoves()).sort();
+  U.assert(moves.join(',') == 'b2,b3,b4,c2,c4,d2,d3,d4');
+
+  board.load(`
+. . . . .
+. n . N .
+. . k . .
+. . . . .
+. . . . .
+`);
+  piece = board.get('c3').piece;
+  moves = Array.from(piece.legalmoves()).sort();
+  U.assert(moves.join(',') == 'b2,b3,c2,c4,d2,d3,d4');
+
+/* TODO: k to d4 puts the king in check.
+  board.load(`
+. . . . .
+. . . . .
+. . k . .
+. . N . .
+. . . . .
+`);
+  piece = board.get('c3').piece;
+  moves = Array.from(piece.legalmoves()).sort();
+  U.assert(moves.join(',') == 'b2,b3,b4,c2,c4,d2,d3');
+*/
+}
+
+
 export function test_Knight_legalmoves(U) {
   let board = new Board();
   board.load(`

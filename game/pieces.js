@@ -72,6 +72,8 @@ export class Pawn extends Piece {
     for (let x of ['left', 'right'])
       if (forward[x] && forward[x].piece && (forward[x].piece.player != this.player))
         yield forward[x].name;
+    // TODO: https://en.wikipedia.org/wiki/Chess#En_passant
+    // TODO: https://en.wikipedia.org/wiki/Chess#Promotion
   }
 }
 
@@ -90,5 +92,15 @@ export class Rook extends Piece {
   static glyph = ['\u2656', '\u265c'];
 
   *legalmoves() {
+    for (let dir of ['up', 'down', 'left', 'right']) {
+      let square = this.square[dir];
+      while (square && (!square.piece || square.piece.player != this.player)) {
+        yield square.name;
+        if (square.piece)
+          break;
+        square = square[dir];
+      }
+    }
+    // TODO: https://en.wikipedia.org/wiki/Chess#Castling
   }
 }

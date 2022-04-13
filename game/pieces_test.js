@@ -109,3 +109,27 @@ r R .
   moves = Array.from(piece.legalmoves()).sort();
   U.assert(moves.join(',') == 'a3');
 }
+
+
+export function test_Rook_legalmoves(U) {
+  let board = new Board();
+  board.load(`
+. . . . .
+. . . . .
+. . r . .
+. . . . .
+. . . . .
+`);
+  let piece = board.get('c3').piece;
+  let moves = Array.from(piece.legalmoves()).sort();
+  U.assert(moves.join(',') == 'a3,b3,c1,c2,c4,c5,d3,e3');
+
+  board.load(`
+. n r N .
+. . . . .
+. . . . .
+`);
+  piece = board.get('c3').piece;
+  moves = Array.from(piece.legalmoves()).sort();
+  U.assert(moves.join(',') == 'c1,c2,d3');
+}

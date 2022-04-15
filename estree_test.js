@@ -120,8 +120,9 @@ BinaryExpression
   │    │    │    │         ├→ value: "get"
   │    │    │    │         └→ raw: "get"
   │    │    │    └→ arguments: Array
-  │    │    │         ├→ Identifier
-  │    │    │         │    └→ name: "'a1'"
+  │    │    │         ├→ Literal
+  │    │    │         │    ├→ value: "a1"
+  │    │    │         │    └→ raw: "'a1'"
   │    │    │         └→ CallExpression
   │    │    │              ├→ callee: Identifier
   │    │    │              │    └→ name: "foo"

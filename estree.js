@@ -80,10 +80,13 @@ export function buildTree(tokens) {
       }
       expr = new CallExpression(expr, args);
     } else if (!expr) {
+      let raw = next;
+      if ((next.length > 1) && (next[0] == "'") && (next[next.length - 1] == "'"))
+        next = `"${next.substr(1, next.length - 2).replace(/"/g, '\\"')}"`;
       try {
-        expr = new Literal(JSON.parse(next), next);
+        expr = new Literal(JSON.parse(next), raw);
       } catch {
-        expr = new Identifier(next);
+        expr = new Identifier(raw);
       }
     } else {
       tokens.unshift(next);

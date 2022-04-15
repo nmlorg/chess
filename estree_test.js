@@ -77,8 +77,9 @@ BinaryExpression(
 MemberExpression(
     object=Identifier(
         name="aa"),
-    property=Identifier(
-        name="bb"))`);
+    property=Literal(
+        value="bb",
+        raw="bb"))`);
 
   expr = 'aa.bb.cc';
   tokens = estree.tokenize(expr);
@@ -88,10 +89,12 @@ MemberExpression(
     object=MemberExpression(
         object=Identifier(
             name="aa"),
-        property=Identifier(
-            name="bb")),
-    property=Identifier(
-        name="cc"))`);
+        property=Literal(
+            value="bb",
+            raw="bb")),
+    property=Literal(
+        value="cc",
+        raw="cc"))`);
 
   expr = 'aa()';
   tokens = estree.tokenize(expr);
@@ -127,8 +130,9 @@ BinaryExpression(
                 callee=MemberExpression(
                     object=Identifier(
                         name="board"),
-                    property=Identifier(
-                        name="get")),
+                    property=Literal(
+                        value="get",
+                        raw="get")),
                 arguments=[
                     Identifier(
                         name="'a1'"),
@@ -137,11 +141,14 @@ BinaryExpression(
                             name="foo"),
                         arguments=[]),
                 ]),
-            property=Identifier(
-                name="piece")),
-        property=Identifier(
-            name="moves")),
+            property=Literal(
+                value="piece",
+                raw="piece")),
+        property=Literal(
+            value="moves",
+            raw="moves")),
     operator="==",
-    right=Identifier(
-        name="123"))`);
+    right=Literal(
+        value=123,
+        raw="123"))`);
 }

@@ -37,6 +37,15 @@ class Identifier extends Node {
 }
 
 
+class Literal extends Node {
+  constructor(value, raw) {
+    super();
+    this.value = value;
+    this.raw = raw;
+  }
+}
+
+
 class MemberExpression extends Node {
   constructor(object, property) {
     super();
@@ -52,9 +61,11 @@ export function buildTree(tokens) {
     let next = tokens.shift();
     if (next == '==')
       expr = new BinaryExpression(expr, next, buildTree(tokens));
-    else if (next == '.')
-      expr = new MemberExpression(expr, new Identifier(tokens.shift()));
-    else if (next == '(') {
+    else if (next == '.') {
+      next = tokens.shift();
+      // MemberExpression.property is supposed to be an Identifier, but is treated as a Literal.
+      expr = new MemberExpression(expr, new Literal(next, next));
+    } else if (next == '(') {
       let args = [];
       while (tokens.length) {
         if (tokens[0] == ')') {
@@ -68,9 +79,13 @@ export function buildTree(tokens) {
         }
       }
       expr = new CallExpression(expr, args);
-    } else if (!expr)
-      expr = new Identifier(next);
-    else {
+    } else if (!expr) {
+      try {
+        expr = new Literal(JSON.parse(next), next);
+      } catch {
+        expr = new Identifier(next);
+      }
+    } else {
       tokens.unshift(next);
       break;
     }

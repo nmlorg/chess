@@ -15,7 +15,7 @@ class SubstitutedExpression extends estree.Node {
 }
 
 
-export function replacePieces(node, pieces) {
+export function replacePieces(node, pieces, iscall=false) {
   if (Array.isArray(node))
     return node.map(subnode => replacePieces(subnode, pieces));
 
@@ -23,11 +23,15 @@ export function replacePieces(node, pieces) {
     return node;
 
   let full = String(node);
+  let subiscall = node instanceof estree.CallExpression;
 
   for (let [k, v] of Object.entries(node))
-    node[k] = replacePieces(v, pieces);
+    node[k] = replacePieces(v, pieces, subiscall);
 
-  let sub = new SubstitutedExpression(`__tmp${pieces.length}`, full, String(node));
+  let local = String(node);
+  if (iscall && (node instanceof estree.MemberExpression))
+    local = `${local}.bind(${node.object})`;
+  let sub = new SubstitutedExpression(`__tmp${pieces.length}`, full, local);
   pieces.push(sub);
   return sub;
 }

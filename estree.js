@@ -24,7 +24,7 @@ class BinaryExpression extends Node {
 }
 
 
-class CallExpression extends Node {
+export class CallExpression extends Node {
   constructor(callee, arguments_) {
     super();
     this.callee = callee;
@@ -62,7 +62,7 @@ export class Literal extends Node {
 }
 
 
-class MemberExpression extends Node {
+export class MemberExpression extends Node {
   constructor(object, property) {
     super();
     this.object = object;

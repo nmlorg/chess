@@ -85,4 +85,37 @@ Array
        ├→ full: "foo(aa.bb, cc.dd) == 123"
        └→ local: "__tmp5 == 123"
 `);
+
+  expr = 'board.get().extra()';
+  pieces = [];
+  sub = assertmod.replacePieces(estree.buildTree(estree.tokenize(expr)), pieces);
+  U.assert(flattenTree(sub) == `
+SubstitutedExpression
+  ├→ name: "__tmp4"
+  ├→ full: "board.get().extra()"
+  └→ local: "__tmp3()"
+`);
+  U.assert(flattenTree(pieces) == `
+Array
+  ├→ SubstitutedExpression
+  │    ├→ name: "__tmp0"
+  │    ├→ full: "board"
+  │    └→ local: "board"
+  ├→ SubstitutedExpression
+  │    ├→ name: "__tmp1"
+  │    ├→ full: "board.get"
+  │    └→ local: "__tmp0.get.bind(__tmp0)"
+  ├→ SubstitutedExpression
+  │    ├→ name: "__tmp2"
+  │    ├→ full: "board.get()"
+  │    └→ local: "__tmp1()"
+  ├→ SubstitutedExpression
+  │    ├→ name: "__tmp3"
+  │    ├→ full: "board.get().extra"
+  │    └→ local: "__tmp2.extra.bind(__tmp2)"
+  └→ SubstitutedExpression
+       ├→ name: "__tmp4"
+       ├→ full: "board.get().extra()"
+       └→ local: "__tmp3()"
+`);
 }

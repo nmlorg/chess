@@ -35,3 +35,26 @@ export function replacePieces(node, pieces, iscall=false) {
   pieces.push(sub);
   return sub;
 }
+
+
+function* fixAssert_(expr) {
+  let tokens = estree.tokenize(expr);
+  let tree = estree.buildTree(tokens);
+  let pieces = [];
+  let newroot = replacePieces(tree, pieces);
+  if (pieces.length) {
+    yield `let ${pieces[0].name} = ${pieces[0].local}`;
+    for (let i = 1; i < pieces.length; i++)
+      yield `, ${pieces[i].name} = ${pieces[i].local}`;
+    yield '; ';
+  }
+  yield `if (!(${newroot})) throw new U.AssertionError(${JSON.stringify(expr)}`
+  for (let piece of pieces)
+    yield ` + '\\n  ' + ${JSON.stringify(piece.full)} + ': ' + U.format(${piece.name})`;
+  yield ');';
+}
+
+
+export function fixAssert(expr) {
+  return Array.from(fixAssert_(expr)).join('');
+}

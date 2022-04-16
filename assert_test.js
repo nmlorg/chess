@@ -119,3 +119,22 @@ Array
        └→ local: "__tmp3()"
 `);
 }
+
+
+export function test_fixAssert(U) {
+  let expr = '123';
+  U.assert(assertmod.fixAssert(expr) == `\
+if (!(123)) throw new U.AssertionError("123");`);
+
+  expr = '123 == 234';
+  U.assert(assertmod.fixAssert(expr) == `\
+let __tmp0 = 123 == 234; if (!(__tmp0)) throw new U.AssertionError("123 == 234" + '\\n  ' + "123 == 234" + ': ' + U.format(__tmp0));`);
+
+  expr = 'board == 123';
+  U.assert(assertmod.fixAssert(expr) == `\
+let __tmp0 = board, __tmp1 = __tmp0 == 123; if (!(__tmp1)) throw new U.AssertionError("board == 123" + '\\n  ' + "board" + ': ' + U.format(__tmp0) + '\\n  ' + "board == 123" + ': ' + U.format(__tmp1));`);
+
+  expr = "board.get('a1', foo()).piece.moves == 123";
+  U.assert(assertmod.fixAssert(expr) == `\
+let __tmp0 = board, __tmp1 = __tmp0.get.bind(__tmp0), __tmp2 = foo, __tmp3 = __tmp2(), __tmp4 = __tmp1('a1', __tmp3), __tmp5 = __tmp4.piece, __tmp6 = __tmp5.moves, __tmp7 = __tmp6 == 123; if (!(__tmp7)) throw new U.AssertionError("board.get('a1', foo()).piece.moves == 123" + '\\n  ' + "board" + ': ' + U.format(__tmp0) + '\\n  ' + "board.get" + ': ' + U.format(__tmp1) + '\\n  ' + "foo" + ': ' + U.format(__tmp2) + '\\n  ' + "foo()" + ': ' + U.format(__tmp3) + '\\n  ' + "board.get('a1', foo())" + ': ' + U.format(__tmp4) + '\\n  ' + "board.get('a1', foo()).piece" + ': ' + U.format(__tmp5) + '\\n  ' + "board.get('a1', foo()).piece.moves" + ': ' + U.format(__tmp6) + '\\n  ' + "board.get('a1', foo()).piece.moves == 123" + ': ' + U.format(__tmp7));`);
+}

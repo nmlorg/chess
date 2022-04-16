@@ -1,31 +1,30 @@
 import * as assertmod from './assert.js';
 import * as estree from './estree.js';
-import {flattenTree} from './estree_test.js';
 
 
 export function test_replacePieces(U) {
   let expr = '123';
   let pieces = [];
   let sub = assertmod.replacePieces(estree.buildTree(estree.tokenize(expr)), pieces);
-  U.assert(flattenTree(sub) == `
+  U.assert(estree.visTree(sub) == `
 Literal
   ├→ value: 123
   └→ raw: "123"
 `);
-  U.assert(flattenTree(pieces) == `
+  U.assert(estree.visTree(pieces) == `
 Array
 `);
 
   expr = 'aa.bb.cc.dd';
   pieces = [];
   sub = assertmod.replacePieces(estree.buildTree(estree.tokenize(expr)), pieces);
-  U.assert(flattenTree(sub) == `
+  U.assert(estree.visTree(sub) == `
 SubstitutedExpression
   ├→ name: "__tmp3"
   ├→ full: "aa.bb.cc.dd"
   └→ local: "__tmp2.dd"
 `);
-  U.assert(flattenTree(pieces) == `
+  U.assert(estree.visTree(pieces) == `
 Array
   ├→ SubstitutedExpression
   │    ├→ name: "__tmp0"
@@ -48,13 +47,13 @@ Array
   expr = 'foo(aa.bb, cc.dd) == 123';
   pieces = [];
   sub = assertmod.replacePieces(estree.buildTree(estree.tokenize(expr)), pieces);
-  U.assert(flattenTree(sub) == `
+  U.assert(estree.visTree(sub) == `
 SubstitutedExpression
   ├→ name: "__tmp6"
   ├→ full: "foo(aa.bb, cc.dd) == 123"
   └→ local: "__tmp5 == 123"
 `);
-  U.assert(flattenTree(pieces) == `
+  U.assert(estree.visTree(pieces) == `
 Array
   ├→ SubstitutedExpression
   │    ├→ name: "__tmp0"
@@ -89,13 +88,13 @@ Array
   expr = 'board.get().extra()';
   pieces = [];
   sub = assertmod.replacePieces(estree.buildTree(estree.tokenize(expr)), pieces);
-  U.assert(flattenTree(sub) == `
+  U.assert(estree.visTree(sub) == `
 SubstitutedExpression
   ├→ name: "__tmp4"
   ├→ full: "board.get().extra()"
   └→ local: "__tmp3()"
 `);
-  U.assert(flattenTree(pieces) == `
+  U.assert(estree.visTree(pieces) == `
 Array
   ├→ SubstitutedExpression
   │    ├→ name: "__tmp0"

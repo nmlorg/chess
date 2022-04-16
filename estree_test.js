@@ -9,45 +9,11 @@ export function test_tokenize(U) {
 }
 
 
-function* flattenTree_(node) {
-  if (Array.isArray(node)) {
-    yield 'Array';
-    for (let i = 0; i < node.length; i++) {
-      let last = i == node.length - 1;
-      let lines = Array.from(flattenTree_(node[i]));
-      yield `  ${last ? '\u2514' : '\u251c'}\u2192 ${lines[0]}`;
-      for (let j = 1; j < lines.length; j++)
-        yield `  ${last ? ' ' : '\u2502'}  ${lines[j]}`;
-    }
-    return;
-  }
-  if (!(node instanceof estree.Node)) {
-    yield JSON.stringify(node);
-    return;
-  }
-  yield `${node.constructor.name}`;
-  let children = Object.entries(node);
-  for (let i = 0; i < children.length; i++) {
-    let last = i == children.length - 1;
-    let [k, v] = children[i];
-    let lines = Array.from(flattenTree_(v));
-    yield `  ${last ? '\u2514' : '\u251c'}\u2192 ${k}: ${lines[0]}`;
-    for (let j = 1; j < lines.length; j++)
-      yield `  ${last ? ' ' : '\u2502'}  ${lines[j]}`;
-  }
-}
-
-
-export function flattenTree(tree) {
-  return `\n${Array.from(flattenTree_(tree)).join('\n')}\n`;
-}
-
-
 export function test_buildTree(U) {
   let expr = 'aa';
   let tokens = estree.tokenize(expr);
   let tree = estree.buildTree(tokens);
-  U.assert(flattenTree(tree) == `
+  U.assert(estree.visTree(tree) == `
 Identifier
   └→ name: "aa"
 `);
@@ -55,7 +21,7 @@ Identifier
   expr = 'aa == bb';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(flattenTree(tree) == `
+  U.assert(estree.visTree(tree) == `
 BinaryExpression
   ├→ left: Identifier
   │    └→ name: "aa"
@@ -67,7 +33,7 @@ BinaryExpression
   expr = 'aa.bb';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(flattenTree(tree) == `
+  U.assert(estree.visTree(tree) == `
 MemberExpression
   ├→ object: Identifier
   │    └→ name: "aa"
@@ -79,7 +45,7 @@ MemberExpression
   expr = 'aa.bb.cc';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(flattenTree(tree) == `
+  U.assert(estree.visTree(tree) == `
 MemberExpression
   ├→ object: MemberExpression
   │    ├→ object: Identifier
@@ -95,7 +61,7 @@ MemberExpression
   expr = 'aa()';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(flattenTree(tree) == `
+  U.assert(estree.visTree(tree) == `
 CallExpression
   ├→ callee: Identifier
   │    └→ name: "aa"
@@ -105,7 +71,7 @@ CallExpression
   expr = 'aa(bb, cc)';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(flattenTree(tree) == `
+  U.assert(estree.visTree(tree) == `
 CallExpression
   ├→ callee: Identifier
   │    └→ name: "aa"
@@ -119,7 +85,7 @@ CallExpression
   expr = "board.get('a1', foo()).piece.moves == 123";
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(flattenTree(tree) == `
+  U.assert(estree.visTree(tree) == `
 BinaryExpression
   ├→ left: MemberExpression
   │    ├→ object: MemberExpression

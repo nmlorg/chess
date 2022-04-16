@@ -115,3 +115,37 @@ export function buildTree(tokens) {
   }
   return expr;
 }
+
+
+function* visTree_(node) {
+  if (Array.isArray(node)) {
+    yield 'Array';
+    for (let i = 0; i < node.length; i++) {
+      let last = i == node.length - 1;
+      let lines = Array.from(visTree_(node[i]));
+      yield `  ${last ? '\u2514' : '\u251c'}\u2192 ${lines[0]}`;
+      for (let j = 1; j < lines.length; j++)
+        yield `  ${last ? ' ' : '\u2502'}  ${lines[j]}`;
+    }
+    return;
+  }
+  if (!(node instanceof Node)) {
+    yield JSON.stringify(node);
+    return;
+  }
+  yield `${node.constructor.name}`;
+  let children = Object.entries(node);
+  for (let i = 0; i < children.length; i++) {
+    let last = i == children.length - 1;
+    let [k, v] = children[i];
+    let lines = Array.from(visTree_(v));
+    yield `  ${last ? '\u2514' : '\u251c'}\u2192 ${k}: ${lines[0]}`;
+    for (let j = 1; j < lines.length; j++)
+      yield `  ${last ? ' ' : '\u2502'}  ${lines[j]}`;
+  }
+}
+
+
+export function visTree(tree) {
+  return `\n${Array.from(visTree_(tree)).join('\n')}\n`;
+}

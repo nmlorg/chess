@@ -7,9 +7,9 @@ export function testBasic(U) {
 
 
 export function testAssert(U) {
-  U.assert(1 == 1);
+  assert 1 == 1;
   try {
-    U.assert(1 == 2);
+    assert 1 == 2;
     throw new Error("Shouldn't be reachable");
   } catch (exc) {
     if (exc.constructor.name != 'AssertionError')
@@ -19,5 +19,6 @@ export function testAssert(U) {
 
 
 export function testAssertExpectedToFail(U) {
-  U.assert(1 == 2);
+  let one = 1, val = {two() {return 2}};
+  assert one == val.two();
 }

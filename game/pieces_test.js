@@ -12,7 +12,7 @@ export function test_Bishop_legalmoves(U) {
 `);
   let piece = board.get('c3').piece;
   let moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'a1,a5,b2,b4,d2,d4,e1,e5');
+  assert moves.join(',') == 'a1,a5,b2,b4,d2,d4,e1,e5';
 
   board.load(`
 . . b . .
@@ -21,7 +21,7 @@ export function test_Bishop_legalmoves(U) {
 `);
   piece = board.get('c3').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'd2');
+  assert moves.join(',') == 'd2';
 }
 
 
@@ -36,7 +36,7 @@ export function test_King_legalmoves(U) {
 `);
   let piece = board.get('c3').piece;
   let moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'b2,b3,b4,c2,c4,d2,d3,d4');
+  assert moves.join(',') == 'b2,b3,b4,c2,c4,d2,d3,d4';
 
   board.load(`
 . . . . .
@@ -47,7 +47,7 @@ export function test_King_legalmoves(U) {
 `);
   piece = board.get('c3').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'b2,b3,c2,c4,d2,d3,d4');
+  assert moves.join(',') == 'b2,b3,c2,c4,d2,d3,d4';
 
 /* TODO: k to d4 puts the king in check.
   board.load(`
@@ -59,7 +59,7 @@ export function test_King_legalmoves(U) {
 `);
   piece = board.get('c3').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'b2,b3,b4,c2,c4,d2,d3');
+  assert moves.join(',') == 'b2,b3,b4,c2,c4,d2,d3';
 */
 }
 
@@ -73,7 +73,7 @@ export function test_Knight_legalmoves(U) {
 `);
   let piece = board.get('b2').piece;
   let moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == '');
+  assert moves.join(',') == '';
 
   board.load(`
 . . .
@@ -83,7 +83,7 @@ export function test_Knight_legalmoves(U) {
 `);
   piece = board.get('b3').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'a1,c1');
+  assert moves.join(',') == 'a1,c1';
 
   board.load(`
 . . . . .
@@ -94,7 +94,7 @@ export function test_Knight_legalmoves(U) {
 `);
   piece = board.get('c3').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'a2,a4,b1,b5,d1,d5,e2,e4');
+  assert moves.join(',') == 'a2,a4,b1,b5,d1,d5,e2,e4';
 }
 
 
@@ -107,7 +107,7 @@ export function test_Pawn_legalmoves(U) {
 `);
   let piece = board.get('b2').piece;
   let moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'b1');
+  assert moves.join(',') == 'b1';
 
   board.load(`
 . . .
@@ -116,7 +116,7 @@ export function test_Pawn_legalmoves(U) {
 `);
   piece = board.get('b2').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'b3');
+  assert moves.join(',') == 'b3';
 
   board.load(`
 . . .
@@ -126,7 +126,7 @@ export function test_Pawn_legalmoves(U) {
 `);
   piece = board.get('b2').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'b3,b4');
+  assert moves.join(',') == 'b3,b4';
 
   board.load(`
 . . .
@@ -136,7 +136,7 @@ r . R
 `);
   piece = board.get('b2').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'a3,b3,b4');
+  assert moves.join(',') == 'a3,b3,b4';
 
   board.load(`
 . . .
@@ -146,7 +146,7 @@ r R .
 `);
   piece = board.get('b2').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'a3');
+  assert moves.join(',') == 'a3';
 }
 
 
@@ -161,7 +161,7 @@ export function test_Queen_legalmoves(U) {
 `);
   let piece = board.get('c3').piece;
   let moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'a1,a3,a5,b2,b3,b4,c1,c2,c4,c5,d2,d3,d4,e1,e3,e5');
+  assert moves.join(',') == 'a1,a3,a5,b2,b3,b4,c1,c2,c4,c5,d2,d3,d4,e1,e3,e5';
 }
 
 
@@ -176,7 +176,7 @@ export function test_Rook_legalmoves(U) {
 `);
   let piece = board.get('c3').piece;
   let moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'a3,b3,c1,c2,c4,c5,d3,e3');
+  assert moves.join(',') == 'a3,b3,c1,c2,c4,c5,d3,e3';
 
   board.load(`
 . n r N .
@@ -185,5 +185,5 @@ export function test_Rook_legalmoves(U) {
 `);
   piece = board.get('c3').piece;
   moves = Array.from(piece.legalmoves()).sort();
-  U.assert(moves.join(',') == 'c1,c2,d3');
+  assert moves.join(',') == 'c1,c2,d3';
 }

@@ -17,6 +17,10 @@ class BinaryExpression extends Node {
     this.operator = operator;
     this.right = right;
   }
+
+  toString() {
+    return `${this.left} ${this.operator} ${this.right}`;
+  }
 }
 
 
@@ -26,6 +30,10 @@ class CallExpression extends Node {
     this.callee = callee;
     this.arguments = arguments_;
   }
+
+  toString() {
+    return `${this.callee}(${this.arguments.join(', ')})`;
+  }
 }
 
 
@@ -34,14 +42,22 @@ class Identifier extends Node {
     super();
     this.name = name;
   }
+
+  toString() {
+    return this.name;
+  }
 }
 
 
-class Literal extends Node {
+export class Literal extends Node {
   constructor(value, raw) {
     super();
     this.value = value;
     this.raw = raw;
+  }
+
+  toString() {
+    return this.raw;
   }
 }
 
@@ -51,6 +67,10 @@ class MemberExpression extends Node {
     super();
     this.object = object;
     this.property = property;
+  }
+
+  toString() {
+    return `${this.object}.${this.property}`;
   }
 }
 

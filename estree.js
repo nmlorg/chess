@@ -1,5 +1,5 @@
 export function tokenize(expr) {
-  let tokens = expr.trim().split(/([=!<>]?=|"[^"]*"|'[^']*'|\s+|\W)/);
+  let tokens = expr.trim().split(/([=!<>]?=|"[^"]*"|'[^']*'|`[^`]*`|\s+|\W)/);
   for (let i = tokens.length - 1; i >= 0; i--)
     if (tokens[i].trim() == '')
       tokens.splice(i, 1);

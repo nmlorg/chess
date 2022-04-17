@@ -2,10 +2,12 @@ import * as estree from './estree.js';
 
 
 export function test_tokenize(U) {
-  U.assert(estree.tokenize('').join('_') == '');
-  U.assert(estree.tokenize('aa').join('_') == 'aa');
-  U.assert(estree.tokenize('aa.bb').join('_') == 'aa_._bb');
-  U.assert(estree.tokenize('  aa.bb(  cc  () )  ').join('_') == 'aa_._bb_(_cc_(_)_)');
+  assert estree.tokenize('').join('_') == '';
+  assert estree.tokenize('aa').join('_') == 'aa';
+  assert estree.tokenize('aa.bb').join('_') == 'aa_._bb';
+  assert estree.tokenize('  aa.bb(  cc  () )  ').join('_') == 'aa_._bb_(_cc_(_)_)';
+  assert estree.tokenize('func("double q string")').join('_') == 'func_(_"double q string"_)';
+  assert estree.tokenize('func(`template string`)').join('_') == 'func_(_`template string`_)';
 }
 
 
@@ -13,39 +15,39 @@ export function test_buildTree(U) {
   let expr = 'aa';
   let tokens = estree.tokenize(expr);
   let tree = estree.buildTree(tokens);
-  U.assert(estree.visTree(tree) == `
+  assert estree.visTree(tree) == `
 Identifier
   └→ name: "aa"
-`);
+`;
 
   expr = 'aa == bb';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(estree.visTree(tree) == `
+  assert estree.visTree(tree) == `
 BinaryExpression
   ├→ left: Identifier
   │    └→ name: "aa"
   ├→ operator: "=="
   └→ right: Identifier
        └→ name: "bb"
-`);
+`;
 
   expr = 'aa.bb';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(estree.visTree(tree) == `
+  assert estree.visTree(tree) == `
 MemberExpression
   ├→ object: Identifier
   │    └→ name: "aa"
   └→ property: Literal
        ├→ value: "bb"
        └→ raw: "bb"
-`);
+`;
 
   expr = 'aa.bb.cc';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(estree.visTree(tree) == `
+  assert estree.visTree(tree) == `
 MemberExpression
   ├→ object: MemberExpression
   │    ├→ object: Identifier
@@ -56,22 +58,22 @@ MemberExpression
   └→ property: Literal
        ├→ value: "cc"
        └→ raw: "cc"
-`);
+`;
 
   expr = 'aa()';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(estree.visTree(tree) == `
+  assert estree.visTree(tree) == `
 CallExpression
   ├→ callee: Identifier
   │    └→ name: "aa"
   └→ arguments: Array
-`);
+`;
 
   expr = 'aa(bb, cc)';
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(estree.visTree(tree) == `
+  assert estree.visTree(tree) == `
 CallExpression
   ├→ callee: Identifier
   │    └→ name: "aa"
@@ -80,12 +82,12 @@ CallExpression
        │    └→ name: "bb"
        └→ Identifier
             └→ name: "cc"
-`);
+`;
 
   expr = "board.get('a1', foo()).piece.moves == 123";
   tokens = estree.tokenize(expr);
   tree = estree.buildTree(tokens);
-  U.assert(estree.visTree(tree) == `
+  assert estree.visTree(tree) == `
 BinaryExpression
   ├→ left: MemberExpression
   │    ├→ object: MemberExpression
@@ -114,5 +116,5 @@ BinaryExpression
   └→ right: Literal
        ├→ value: 123
        └→ raw: "123"
-`);
+`;
 }

@@ -50,7 +50,7 @@ function* fixAssert_(expr) {
   }
   yield `if (!(${newroot})) throw new U.AssertionError(${JSON.stringify(expr)}`
   for (let piece of pieces)
-    yield ` + '\\n  ' + ${JSON.stringify(piece.full)} + ': ' + U.format(${piece.name})`;
+    yield ` + '\\n  ' + ${JSON.stringify(piece.full.replace(/\n/g, '\\n'))} + ': ' + U.format(${piece.name})`;
   yield ');';
 }
 

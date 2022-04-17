@@ -36,12 +36,17 @@ format(obj) {
   if ((typeofobj == 'string') || (typeofobj == 'number') || (typeofobj == 'boolean'))
     str = JSON.stringify(obj);
   else {
-    str = String(obj).replace(/\n\s*/g, ' ');
+    try {
+      str = String(obj);
+    } catch {  // Modules.
+      str = Object.prototype.toString.call(obj);
+    }
     if (str == '[object Object]') {
       str = '{' + Object.entries(obj).map(([k, v]) => `${k}: ${this.format(v)}`).join(', ') + '}';
       if ((typeofobj == 'object') && (obj.constructor.name != 'Object'))
         str = `${obj.constructor.name}(${str})`;
     }
+    str = str.replace(/\n\s*/g, ' ');
   }
   if (str.length > 60)
     str = str.substr(0, 59) + '\u22ef';

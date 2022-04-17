@@ -42,14 +42,14 @@ format(obj) {
       str = Object.prototype.toString.call(obj);
     }
     if (str == '[object Object]') {
-      str = '{' + Object.entries(obj).map(([k, v]) => `${k}: ${this.format(v)}`).join(', ') + '}';
+      str = '{' + Object.entries(obj).map(([k, v]) => `${k}: ${v}`).join(', ') + '}';
       if ((typeofobj == 'object') && (obj.constructor.name != 'Object'))
         str = `${obj.constructor.name}(${str})`;
     }
     str = str.replace(/\n\s*/g, ' ');
   }
-  if (str.length > 60)
-    str = str.substr(0, 59) + '\u22ef';
+  if (str.length > 120)
+    str = str.substr(0, 119) + '\u22ef';
   return str;
 },
 

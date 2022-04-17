@@ -79,7 +79,7 @@ export function buildTree(tokens) {
   let expr = null;
   while (tokens.length && (tokens[0] != ',') && (tokens[0] != ')')) {
     let next = tokens.shift();
-    if (next == '==')
+    if ((next == '==') || (next == 'instanceof'))
       expr = new BinaryExpression(expr, next, buildTree(tokens));
     else if (next == '.') {
       next = tokens.shift();

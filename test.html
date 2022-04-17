@@ -64,7 +64,7 @@ for (let testfilename of testfiles) {
   content = `\n${content}`.replaceAll(
       /(\nimport .*')([^']*)(';)/g,
       (match, first, path, last) => `${first}${new URL(path, base).href}${last}`).substr(1);
-  content = content.replaceAll(/ assert ([^;]*);/g, (match, expr) => ` {${fixAssert(expr)}}`);
+  content = content.replaceAll(/ assert (.*?);\n/gs, (match, expr) => ` {${fixAssert(expr)}}\n`);
   let blob = new Blob([content], {type: 'text/javascript'});
   let bloburl = URL.createObjectURL(blob);
   let testfile = await import(bloburl);

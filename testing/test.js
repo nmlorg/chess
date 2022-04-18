@@ -61,7 +61,7 @@ export async function runTests(pre, testfilename) {
         pre.append(' PASS\n');
       } catch (exc) {
         pre.append(' FAIL\n');
-        pre.append(`${exc.stack}\n`);
+        pre.append(`${exc.stack.replace(bloburl, base)}\n`);
       }
     }
   }
